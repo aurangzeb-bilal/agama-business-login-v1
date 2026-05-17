@@ -1,0 +1,42 @@
+{
+    "projectName": "agama-login-business-v1",
+    "description": "Agama login flow for business accounts (mirrors agama-pw-v3, with phone stored in telephoneNumber instead of mobile).",
+    "type": "",
+    "author": "PhiWallet",
+    "version": "1.0",
+    "authorWebsite": "",
+    "githubUri": "",
+    "license": "apache-2.0",
+    "lastUpdated": "",
+    "tags": [
+        "authentication",
+        "authorization",
+        "jans",
+        "business"
+    ],
+    "noDirectLaunch": [],
+    "configs": {
+        "org.gluu.agama.businesslogin.main": {
+            "maxLoginAttempt": 6,
+            "lockExpTime": 180,
+            "enableLock": true,
+            "ACCOUNT_SID": "PUT_YOUR_TWILIO_ACCOUNT_SID_HERE",
+            "AUTH_TOKEN": "PUT_YOUR_TWILIO_AUTH_TOKEN_HERE",
+            "FROM_NUMBER": "PUT_YOUR_TWILIO_FROM_NUMBER_HERE",
+            "FROM_NUMBER_US": "PUT_US_SENDER_NUMBER_HERE",
+            "FROM_NUMBER_RESTRICTED_COUNTRIES": "PUT_RESTRICTED_SENDER_NUMBER_HERE",
+            "US_COUNTRY_CODES": "PUT_US_COUNTRY_CODES_HERE",
+            "RESTRICTED_COUNTRY_CODES": "PUT_RESTRICTED_CODES_HERE",
+            "FROM_NUMBER_WHATSAPP": "PUT_YOUR_WHATSAPP_NUMBER_HERE",
+            "WHATSAPP_CONTENT_SID_EN": "HXf2c5011c6929bd9d38ee35af793dd7fb",
+            "WHATSAPP_CONTENT_SID_AR": "HXdb34d514717a4fb6f04d0919d3cdfe91",
+            "WHATSAPP_CONTENT_SID_ES": "HXda4b1299a0e39ad963bba7578df0341f",
+            "WHATSAPP_CONTENT_SID_FR": "HXaee969b7bb2238af005564fac5cb7ea8",
+            "WHATSAPP_CONTENT_SID_ID": "HX3e065bc1144c7db6bb286d0ab11b4291",
+            "WHATSAPP_CONTENT_SID_PT": "HX967b66630b52603b4b4e1c30d29759f7"
+        },
+        "org.gluu.agama.businesslogin.reset": {},
+        "org.gluu.agama.businesslogin.smsotp": {}
+    },
+    "name": "agama-login-business-v1"
+}
