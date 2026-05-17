@@ -28,8 +28,7 @@ class EmailResetOtpId {
                     <tr>
                       <td style="padding:45px;font-family:'Nunito Sans',Helvetica,Arial,sans-serif;color:#51545E;font-size:16px;line-height:1.625;">
                         <p>Halo,</p>
-
-                        <p>Masukkan kode 6 digit di bawah ini untuk memverifikasi alamat email Anda.</p>
+                        <p>Kami menerima permintaan untuk mengatur ulang kata sandi akun Phi Wallet Business Anda. Masukkan kode 6 digit di bawah ini untuk melanjutkan.</p>
 
                         <div style="text-align:center;margin:30px 0;">
                           <div style="display:inline-block;background-color:#f5f5f5;color:#AD9269;font-size:40px;font-weight:600;letter-spacing:6px;padding:10px 20px;border-radius:4px;">
@@ -37,11 +36,10 @@ class EmailResetOtpId {
                           </div>
                         </div>
 
-                        <p>Jika Anda tidak meminta ini, Anda dapat mengabaikan pesan ini dengan aman. Akun Anda tetap aman.</p>
-                        <p>Terima kasih atas kepercayaan Anda.</p>
+                        <p>Jika Anda tidak meminta hal ini, abaikan pesan ini dengan aman — akun Anda akan tetap aman.</p>
 
-                        <p style="margin-top:30px;">Salam hangat,</p>
-                        <p style="margin-top:30px;">Tim Phi Wallet</p>
+                        <p style="margin-top:30px;">Terima kasih,</p>
+                        <p style="margin-top:30px;">Tim Phi Wallet Business</p>
 
                       </td>
                     </tr>
@@ -57,7 +55,7 @@ class EmailResetOtpId {
                   <tbody>
                     <tr>
                       <td style="padding:20px;font-size:12px;color:#666;">
-                        <p style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#565555;">Ikuti kami di:</p>
+                        <p style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#565555;">Ikuti kami:</p>
                         <p>
                           <a href="https://www.facebook.com/PhiWallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/facebook.png" style="height:20px;"></a>
                           <a href="https://x.com/PhiWallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/twitter.png" style="height:20px;"></a>
@@ -65,9 +63,9 @@ class EmailResetOtpId {
                           <a href="https://www.linkedin.com/company/phiwallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/linkedin.png" style="height:20px;"></a>
                         </p>
                         <p style="margin-top:10px;line-height:20px;color:#A8AAAF;font-size:12px;">
-                          Phi Wallet Unipessoal LDA<br>
-                          Avenida da Liberdade 262 R/C<br>
-                          1250-149 Lisbon<br>
+                          Phi Wallet, Unipessoal, LDA<br>
+                          Avenida Dom João II, Lote 11902/A Escritório 2.10<br>
+                          Lisboa - 1990-366<br>
                           Portugal
                         </p>
                       </td>
@@ -86,7 +84,7 @@ class EmailResetOtpId {
 """;
 
         return Map.of(
-            "subject", "Kode Verifikasi - Phi Walletl",
+            "subject", "Atur ulang kata sandi Anda",
             "body", html
         );
     }

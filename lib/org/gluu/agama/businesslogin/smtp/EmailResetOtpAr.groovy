@@ -28,8 +28,7 @@ class EmailResetOtpAr {
                     <tr>
                       <td style="padding:45px;font-family:'Nunito Sans',Helvetica,Arial,sans-serif;color:#51545E;font-size:16px;line-height:1.625;">
                         <p dir="rtl">مرحبًا،</p>
-                        <p>لقد تلقّينا طلبًا لإعادة تعيين كلمة المرور لحسابك في Phi Wallet.</p>
-                        <p>للمتابعة، يرجى إدخال رمز التحقق التالي:</p>
+                        <p>لقد تلقّينا طلبًا لإعادة تعيين كلمة المرور لحسابك في Phi Wallet Business. أدخل الرمز المكوّن من 6 أرقام أدناه للمتابعة.</p>
 
                         <div style="text-align:center;margin:30px 0;">
                           <div style="display:inline-block;background-color:#f5f5f5;color:#AD9269;font-size:40px;font-weight:600;letter-spacing:6px;padding:10px 20px;border-radius:4px;">
@@ -37,10 +36,10 @@ class EmailResetOtpAr {
                           </div>
                         </div>
 
-                        <p>إذا لم تطلب هذا الإجراء، يمكنك تجاهل هذه الرسالة بأمان. سيبقى حسابك آمِنًا.</p>
-                        <p>شكرًا لثقتك بنا.</p>
+                        <p>إذا لم تطلب هذا الإجراء، يمكنك تجاهل هذه الرسالة بأمان — سيبقى حسابك آمِنًا.</p>
 
-                        <p style="margin-top:30px;">مع التحية،<br>فريق Phi Wallet</p>
+                        <p style="margin-top:30px;">شكرًا،</p>
+                        <p style="margin-top:30px;">فريق Phi Wallet Business</p>
 
                       </td>
                     </tr>
@@ -56,7 +55,7 @@ class EmailResetOtpAr {
                   <tbody>
                     <tr>
                       <td style="padding:20px;font-size:12px;color:#666;">
-                        <p style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#565555;">Follow us on:</p>
+                        <p style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#565555;">تابعنا:</p>
                         <p>
                           <a href="https://www.facebook.com/PhiWallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/facebook.png" style="height:20px;"></a>
                           <a href="https://x.com/PhiWallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/twitter.png" style="height:20px;"></a>
@@ -64,9 +63,9 @@ class EmailResetOtpAr {
                           <a href="https://www.linkedin.com/company/phiwallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/linkedin.png" style="height:20px;"></a>
                         </p>
                         <p style="margin-top:10px;line-height:20px;color:#A8AAAF;font-size:12px;">
-                          Phi Wallet Unipessoal LDA<br>
-                          Avenida da Liberdade 262 R/C<br>
-                          1250-149 Lisbon<br>
+                          Phi Wallet, Unipessoal, LDA<br>
+                          Avenida Dom João II, Lote 11902/A Escritório 2.10<br>
+                          Lisboa - 1990-366<br>
                           Portugal
                         </p>
                       </td>
@@ -75,7 +74,7 @@ class EmailResetOtpAr {
                 </table>
               </td>
             </tr>
-            
+
           </tbody>
         </table>
       </td>
@@ -85,7 +84,7 @@ class EmailResetOtpAr {
 """;
 
         return Map.of(
-            "subject", "رمز التحقق الخاص بك - Phi Wallet",
+            "subject", "إعادة تعيين كلمة المرور",
             "body", html
         );
     }

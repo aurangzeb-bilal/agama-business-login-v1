@@ -28,8 +28,7 @@ class EmailResetOtpEs {
                     <tr>
                       <td style="padding:45px;font-family:'Nunito Sans',Helvetica,Arial,sans-serif;color:#51545E;font-size:16px;line-height:1.625;">
                         <p>Hola,</p>
-                        
-                        <p>Ingresa el código de 6 dígitos a continuación para verificar tu dirección de correo electrónico.</p>
+                        <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta de Phi Wallet Business. Ingresa el código de 6 dígitos a continuación para continuar.</p>
 
                         <div style="text-align:center;margin:30px 0;">
                           <div style="display:inline-block;background-color:#f5f5f5;color:#AD9269;font-size:40px;font-weight:600;letter-spacing:6px;padding:10px 20px;border-radius:4px;">
@@ -37,11 +36,10 @@ class EmailResetOtpEs {
                           </div>
                         </div>
 
-                        <p>Si tú no realizaste esta solicitud, puedes ignorar este mensaje con tranquilidad. Tu cuenta seguirá segura.</p>
-                        <p>Gracias por confiar en nosotros</p>
+                        <p>Si no realizaste esta solicitud, puedes ignorar este mensaje con tranquilidad — tu cuenta seguirá segura.</p>
 
-                        <p style="margin-top:30px;">Atentamente,</p>
-                        <p style="margin-top:30px;">Equipo Phi Wallet</p>
+                        <p style="margin-top:30px;">Gracias,</p>
+                        <p style="margin-top:30px;">Equipo Phi Wallet Business</p>
 
                       </td>
                     </tr>
@@ -57,7 +55,7 @@ class EmailResetOtpEs {
                   <tbody>
                     <tr>
                       <td style="padding:20px;font-size:12px;color:#666;">
-                        <p style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#565555;">Follow us on:</p>
+                        <p style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#565555;">Síguenos:</p>
                         <p>
                           <a href="https://www.facebook.com/PhiWallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/facebook.png" style="height:20px;"></a>
                           <a href="https://x.com/PhiWallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/twitter.png" style="height:20px;"></a>
@@ -65,9 +63,9 @@ class EmailResetOtpEs {
                           <a href="https://www.linkedin.com/company/phiwallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/linkedin.png" style="height:20px;"></a>
                         </p>
                         <p style="margin-top:10px;line-height:20px;color:#A8AAAF;font-size:12px;">
-                          Phi Wallet Unipessoal LDA<br>
-                          Avenida da Liberdade 262 R/C<br>
-                          1250-149 Lisbon<br>
+                          Phi Wallet, Unipessoal, LDA<br>
+                          Avenida Dom João II, Lote 11902/A Escritório 2.10<br>
+                          Lisboa - 1990-366<br>
                           Portugal
                         </p>
                       </td>
@@ -86,7 +84,7 @@ class EmailResetOtpEs {
 """;
 
         return Map.of(
-            "subject", "Código de verificación - Phi Wallet",
+            "subject", "Restablece tu contraseña",
             "body", html
         );
     }

@@ -1,5 +1,7 @@
 package org.gluu.agama.businesslogin.smtp;
 
+import java.util.Map;
+
 class EmailResetOtpEn {
 
     static Map<String, String> get(String otp) {
@@ -25,8 +27,8 @@ class EmailResetOtpEn {
                   <tbody>
                     <tr>
                       <td style="padding:45px;font-family:'Nunito Sans',Helvetica,Arial,sans-serif;color:#51545E;font-size:16px;line-height:1.625;">
-                        <p>Dear User,</p>
-                        <p>Enter the 6-digit code below to verify your email address.</p>
+                        <p>Hello,</p>
+                        <p>We received a request to reset your Phi Wallet Business password. Enter the 6-digit code below to continue.</p>
 
                         <div style="text-align:center;margin:30px 0;">
                           <div style="display:inline-block;background-color:#f5f5f5;color:#AD9269;font-size:40px;font-weight:600;letter-spacing:6px;padding:10px 20px;border-radius:4px;">
@@ -34,11 +36,10 @@ class EmailResetOtpEn {
                           </div>
                         </div>
 
-                        <p>If you did not request this, you can safely ignore this message. Your account will remain secure.</p>
-                        <p>Thank you for trusting us.</p>
+                        <p>If you didn't request this, you can safely ignore this message — your account will remain secure.</p>
 
-                        <p style="margin-top:30px;">Thank you,</p>
-                        <p style="margin-top:30px;">Phi Wallet Team</p>
+                        <p style="margin-top:30px;">Thanks,</p>
+                        <p style="margin-top:30px;">Phi Wallet Business Team</p>
 
                       </td>
                     </tr>
@@ -54,7 +55,7 @@ class EmailResetOtpEn {
                   <tbody>
                     <tr>
                       <td style="padding:20px;font-size:12px;color:#666;">
-                        <p style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#565555;">Follow us on:</p>
+                        <p style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#565555;">Follow us:</p>
                         <p>
                           <a href="https://www.facebook.com/PhiWallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/facebook.png" style="height:20px;"></a>
                           <a href="https://x.com/PhiWallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/twitter.png" style="height:20px;"></a>
@@ -62,9 +63,9 @@ class EmailResetOtpEn {
                           <a href="https://www.linkedin.com/company/phiwallet" style="margin:0 5px;"><img src="https://storage.googleapis.com/mwapp_prod_bucket/social_icon_images/linkedin.png" style="height:20px;"></a>
                         </p>
                         <p style="margin-top:10px;line-height:20px;color:#A8AAAF;font-size:12px;">
-                          Phi Wallet Unipessoal LDA<br>
-                          Avenida da Liberdade 262 R/C<br>
-                          1250-149 Lisbon<br>
+                          Phi Wallet, Unipessoal, LDA<br>
+                          Avenida Dom João II, Lote 11902/A Escritório 2.10<br>
+                          Lisboa - 1990-366<br>
                           Portugal
                         </p>
                       </td>
@@ -83,7 +84,7 @@ class EmailResetOtpEn {
 """;
 
         return Map.of(
-            "subject", "Your verification code",
+            "subject", "Reset your password",
             "body", html
         );
     }
