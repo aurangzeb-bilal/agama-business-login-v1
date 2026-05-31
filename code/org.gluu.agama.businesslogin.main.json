@@ -1318,7 +1318,7 @@
 				"width": 170,
 				"height": 124
 			},
-			"selected": true
+			"selected": false
 		},
 		{
 			"id": "whenNode-e8477c38-45ac-4176-a0de-64ae77ff920e",
@@ -1454,7 +1454,8 @@
 					"arguments": [
 						"validationService",
 						"username",
-						"storedPhone"
+						"storedPhone",
+						"verificationMethod"
 					],
 					"asssignedVariableName": "otpFeedBack",
 					"exceptionVariableField": "",
@@ -1471,7 +1472,7 @@
 				"width": 170,
 				"height": 124
 			},
-			"selected": false
+			"selected": true
 		},
 		{
 			"id": "whenNode-0ce7eef5-2fa4-482e-b4a4-ffc747997052",
@@ -2668,8 +2669,8 @@
 		}
 	],
 	"viewport": {
-		"x": -6107.667325602509,
-		"y": -439.443946640318,
-		"zoom": 1.3589042895304992
+		"x": -2106.125,
+		"y": -80,
+		"zoom": 0.5
 	}
 }
