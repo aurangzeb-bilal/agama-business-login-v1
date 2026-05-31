@@ -18,7 +18,7 @@ Repeat 6 times max
           // Forget password start
           Log "@info Forget password portion starting"
           // Trigger sub-routine to re-set password
-          passResetResult = Trigger org.gluu.agama.businesslogin.reset
+          passResetResult = Trigger org.gluu.agama.businesslogin.reset 
           // If password reset successful 
           When passResetResult.success is true
                // Password Reset Result
@@ -41,59 +41,27 @@ Repeat 6 times max
                     Log "@info User already have the phone number"
                     Finish credentials.username
                Otherwise
-                    uiFeedback.infoMessage = "User don't have registered mobile number"
-                    uiFeedback.errorMessage = ""
-                    ValidMobileNum = Repeat 10 times max
-                         phoneInput = RRF "InputMobileNumber.ftlh" uiFeedback
-                         phone = phoneInput.phoneNumber
-                         username = credentials.username
-                         // "Check phone number for user +++++++:" username phone
-                         Log "@info Check phone number for user +++++++:" username phone
-                         UniqueNumber = Call validationService isPhoneUnique username phone
-                         When UniqueNumber is true
-                              // sent sms otp
-                              smsOtpSend = Call validationService sendOTPCode username phone
-                              // The OTP Code has been send to user.
-                              Log "@info OTP generated and send to: " phone
-                              // Trigger OTP subflow
-                              otpFeedBack = Trigger org.gluu.agama.businesslogin.smsotp validationService username phone
-                              // OTP Code validation is completed.
-                              Log "@info OTP Code validation completed with status: " otpFeedBack
-                              // Check if OTP validation vas okay
-                              When otpFeedBack.success is true
-                                   PhonenumberUpdated = Call validationService markPhoneAsVerified credentials.username phone
-                                   // "Phone Number updated in user profile"
-                                   uiFeedback.infoMessage = "Phone Number updated in user profile"
-                                   RRF "acknowledgement.ftlh" uiFeedback
-                                   // Password Vealidation completed successfully!
-                                   Finish credentials.username
-                              Otherwise
-                                   // "ExceededResendAttempts"
-                                   When otpFeedBack.error is "ExceededResendAttempts"
-                                        Log "@info Resend attempts exceeded in OTP flow"
-                                        Finish otpFeedBack
-                                   // Check if OTP attempts exceeded
-                                   When otpFeedBack.error is "ExceededTheNumberOfAttemptsAllowed"
-                                        Log "@info OTP validation attempts exceeded"
-                                        Finish otpFeedBack
-                                   uiFeedback.errorMessage = "Please try again with a different mobile number."
-                         Otherwise
-                              // "This phone is already used by another account. Please enter a different one.
-                              Log "@info This phone is already used by another account. Please enter a different one."
-                              uiFeedback.errorMessage = "This phone is already used by another account. Please enter a different one."
-                              uiFeedback.infoMessage = "Please enter a new number"
-                              max = Repeat 4 times max
-                                   otpCred = RRF "smsOtp.ftlh" uiFeedback
-                                   otpValidationResults = Call validationService validateOTPCode phone otpCred.code
-                                   When otpValidationResults is true
-                                        uiFeedback.infoMessage = "Invalid code provided."
-                                   Otherwise
-                                        uiFeedback.errorMessage = "Invalid code provided."
-                              it_ootpmax = { success: false, error: "ExceededTheNumberOfAttemptsAllowed" }
-                              Finish it_ootpmax
-                    Log "@info Phone loop completed"
-                    it_ValidMobileNum = { success: false, error: "ExceededTheNumberOfAttemptsAllowed" }
-                    Finish it_ValidMobileNum
+                    username = credentials.username
+                    storedPhone = Call validationService getPhoneNumber username
+                    When storedPhone is null
+                         Log "@error Business user missing telephoneNumber"
+                         it_aolcm = {success:false, error: "BusinessPhoneMissing"}
+                         Finish it_aolcm
+                    uiFeedback.phone = storedPhone
+                    phoneConfirmInput = RRF "ConfirmBusinessPhone.ftlh" uiFeedback
+                    verificationMethod = phoneConfirmInput.verificationMethod
+                    smsOtpSend = Call validationService sendOTPCode username storedPhone verificationMethod
+                    When smsOtpSend is null
+                         Log "@error OTP send failed for stored phone"
+                         it_gqmgp = {success:false, error: "VerificationCodeFailed"}
+                         Finish it_gqmgp
+                    otpFeedBack = Trigger org.gluu.agama.businesslogin.smsotp validationService username storedPhone verificationMethod
+                    When otpFeedBack.success is true
+                         PhonenumberUpdated = Call validationService markPhoneAsVerified username storedPhone
+                         uiFeedback.infoMessage = "Phone verified"
+                         RRF "acknowledgement.ftlh" uiFeedback
+                         Finish username
+                    Finish otpFeedBack
           // Invalid credentials provided.
           Log "@error Invalid credentials provided"
           When conf.enableLock is true
@@ -108,5 +76,5 @@ Repeat 6 times max
 // The login flow will end here with failure.
 Log "@info The maximum login attempt has been reached!"
 // Maximum attempts reached. Password validation failed!
-it_grygn = {success:false, error: "Password validation failed!"}
-Finish it_grygn
+it_otyok = {success:false, error: "Password validation failed!"}
+Finish it_otyok

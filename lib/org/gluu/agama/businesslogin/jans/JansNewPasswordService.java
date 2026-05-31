@@ -1,5 +1,4 @@
 package org.gluu.agama.businesslogin.jans;
-
 import io.jans.agama.engine.service.FlowService;
 import io.jans.as.common.model.common.User;
 import io.jans.as.server.service.AuthenticationService;
@@ -18,7 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Base64;
 import java.util.stream.Collectors;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
@@ -219,10 +223,9 @@ public class JansNewPasswordService extends NewPasswordService {
         return new String(otp);
     }
 
-    public String sendOTPCode(String username, String phone) {
+     public String sendOTPCode(String username, String phone, String verificationMethod) {
         try {
             // Per-phone send rate-limit — defense against SMS bombing / cost abuse.
-            // canSendOTP returns false once the configured cap is hit within the rolling window.
             if (!canSendOTP(phone)) {
                 logger.warn("OTP send rate-limited for phone {}", phone);
                 return null;
@@ -241,45 +244,113 @@ public class JansNewPasswordService extends NewPasswordService {
                 lang = "en";
             }
 
-            // Generate OTP
+            // Generate OTP, store with TTL
             String otpCode = generateSMSOtpCode(OTP_LENGTH);
             otpStore.put(phone, otpCode);
             otpExpiry.put(phone, System.currentTimeMillis() + otpTtlMs());
             logger.info("OTP generated for phone={}", phone);
 
-            // Localized message
+            // Localized SMS body
             Map<String, String> messages = new HashMap<>();
-
             messages.put("ar", "رمز التحقق OTP الخاص بك من Phi Wallet هو " + otpCode + ". لا تشاركه مع أي شخص.");
             messages.put("en", "Your Phi Wallet OTP is " + otpCode + ". Do not share it with anyone.");
             messages.put("es", "Tu código de Phi Wallet es " + otpCode + ". No lo compartas con nadie.");
             messages.put("fr", "Votre code Phi Wallet est " + otpCode + ". Ne le partagez avec personne.");
             messages.put("id", "Kode Phi Wallet Anda adalah " + otpCode + ". Jangan bagikan kepada siapa pun.");
             messages.put("pt", "O seu código da Phi Wallet é " + otpCode + ". Não o partilhe com ninguém.");
-
             String message = messages.getOrDefault(lang, messages.get("en"));
 
-            // Determine which FROM_NUMBER to use based on country code
-            String fromNumber = getFromNumberForPhone(phone);
+            // Twilio REST credentials (shared by SMS and WhatsApp branches)
+            String accountSid = flowConfig.get("ACCOUNT_SID");
+            String authToken  = flowConfig.get("AUTH_TOKEN");
+            String credentials = Base64.getEncoder().encodeToString(
+                (accountSid + ":" + authToken).getBytes(java.nio.charset.StandardCharsets.UTF_8)
+            );
+            String twilioUrl = "https://api.twilio.com/2010-04-01/Accounts/" + accountSid + "/Messages.json";
 
-            if (fromNumber == null || fromNumber.trim().isEmpty()) {
-                logger.error("FROM_NUMBER is null or empty, cannot send OTP to {}", phone);
-                return null;
+            // Branch on user's verification method choice.
+            // Both branches call Twilio's REST API directly via java.net.http — no SDK needed.
+            boolean isWhatsApp = "whatsapp".equalsIgnoreCase(verificationMethod);
+
+            if (isWhatsApp) {
+                String waFromNumber = flowConfig.get("FROM_NUMBER_WHATSAPP");
+                if (waFromNumber == null || waFromNumber.trim().isEmpty()) {
+                    logger.error("FROM_NUMBER_WHATSAPP not configured");
+                    return null;
+                }
+                String contentSid = getWhatsAppContentSid(lang);
+                if (contentSid == null || contentSid.trim().isEmpty()) {
+                    logger.error("No WhatsApp content SID for lang={}", lang);
+                    return null;
+                }
+
+                String waFrom = "whatsapp:" + waFromNumber;
+                String waTo   = "whatsapp:" + phone;
+                String encodedTo    = java.net.URLEncoder.encode(waTo, "UTF-8");
+                String encodedFrom  = java.net.URLEncoder.encode(waFrom, "UTF-8");
+                String encodedSid   = java.net.URLEncoder.encode(contentSid, "UTF-8");
+                String encodedVars  = java.net.URLEncoder.encode("{\"1\":\"" + otpCode + "\"}", "UTF-8");
+                String formBody = "To=" + encodedTo + "&From=" + encodedFrom + "&ContentSid=" + encodedSid + "&ContentVariables=" + encodedVars;
+
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(twilioUrl))
+                    .header("Authorization", "Basic " + credentials)
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .POST(HttpRequest.BodyPublishers.ofString(formBody))
+                    .build();
+                HttpResponse<String> response = HttpClient.newHttpClient()
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                    logger.error("WhatsApp send failed: status={} body={}", response.statusCode(), response.body());
+                    return null;
+                }
+                logger.info("WhatsApp OTP sent to {}", phone);
+                return phone;
+            } else {
+                // SMS via raw HTTP — avoids Twilio SDK + its Apache HttpClient 5 dependency
+                String fromNumber = getFromNumberForPhone(phone);
+                if (fromNumber == null || fromNumber.trim().isEmpty()) {
+                    logger.error("FROM_NUMBER null/empty for phone {}", phone);
+                    return null;
+                }
+
+                String encodedTo    = java.net.URLEncoder.encode(phone, "UTF-8");
+                String encodedFrom  = java.net.URLEncoder.encode(fromNumber, "UTF-8");
+                String encodedBody  = java.net.URLEncoder.encode(message, "UTF-8");
+                String formBody = "To=" + encodedTo + "&From=" + encodedFrom + "&Body=" + encodedBody;
+
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(twilioUrl))
+                    .header("Authorization", "Basic " + credentials)
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .POST(HttpRequest.BodyPublishers.ofString(formBody))
+                    .build();
+                HttpResponse<String> response = HttpClient.newHttpClient()
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                    logger.error("SMS send failed: status={} body={}", response.statusCode(), response.body());
+                    return null;
+                }
+                logger.info("SMS OTP sent to {} using sender {}", phone, fromNumber);
+                return phone;
             }
-
-            // Send SMS
-            PhoneNumber FROM_NUMBER = new PhoneNumber(fromNumber);
-            PhoneNumber TO_NUMBER = new PhoneNumber(phone);
-
-            Twilio.init(flowConfig.get("ACCOUNT_SID"), flowConfig.get("AUTH_TOKEN"));
-            Message.creator(TO_NUMBER, FROM_NUMBER, message).create();
-
-            logger.info("OTP sent to {} using sender {}", phone, fromNumber);
-            return phone;
-        } catch (Exception ex) {
-            logger.error("Failed to send OTP to {}. Error: {}", phone, ex.getMessage(), ex);
+        } catch (Throwable t) {
+            // Throwable (not just Exception) to also catch NoClassDefFoundError
+            // — surfaces as a clean null return instead of crashing the Agama engine.
+            logger.error("Failed to send OTP to {}. Error class={} message={}", phone, t.getClass().getName(), t.getMessage(), t);
             return null;
         }
+    }
+
+    private String getWhatsAppContentSid(String lang) {
+        String suffix = (lang != null && !lang.isEmpty()) ? lang.toUpperCase() : "EN";
+        String sid = flowConfig.get("WHATSAPP_CONTENT_SID_" + suffix);
+        if (sid == null || sid.trim().isEmpty()) {
+            sid = flowConfig.get("WHATSAPP_CONTENT_SID_EN");
+        }
+        return sid;
     }
 
     public boolean validateOTPCode(String phone, String code) {

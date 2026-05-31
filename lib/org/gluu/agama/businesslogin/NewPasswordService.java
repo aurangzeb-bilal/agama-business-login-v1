@@ -19,7 +19,7 @@ public abstract class NewPasswordService {
 
     public abstract String markPhoneAsVerified(String username, String phone);
 
-    public abstract String sendOTPCode(String username, String phone);
+    public abstract String sendOTPCode(String username, String phone, String verificationMethod);
 
     public abstract boolean validateOTPCode(String phone, String code);
 
