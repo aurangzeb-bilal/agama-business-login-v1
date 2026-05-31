@@ -13,6 +13,8 @@ public abstract class NewPasswordService {
 
     public abstract boolean isPhoneVerified(String username);
 
+    public abstract String getPhoneNumber(String username);
+
     public abstract boolean isPhoneUnique(String username, String phone);
 
     public abstract String markPhoneAsVerified(String username, String phone);
