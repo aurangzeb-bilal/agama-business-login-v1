@@ -223,7 +223,7 @@ public class JansNewPasswordService extends NewPasswordService {
         return new String(otp);
     }
 
-    public String sendOTPCode(String username, String phone, String verificationMethod) {
+     public String sendOTPCode(String username, String phone, String verificationMethod) {
         try {
             // Per-phone send rate-limit — defense against SMS bombing / cost abuse.
             if (!canSendOTP(phone)) {
@@ -260,9 +260,16 @@ public class JansNewPasswordService extends NewPasswordService {
             messages.put("pt", "O seu código da Phi Wallet é " + otpCode + ". Não o partilhe com ninguém.");
             String message = messages.getOrDefault(lang, messages.get("en"));
 
+            // Twilio REST credentials (shared by SMS and WhatsApp branches)
+            String accountSid = flowConfig.get("ACCOUNT_SID");
+            String authToken  = flowConfig.get("AUTH_TOKEN");
+            String credentials = Base64.getEncoder().encodeToString(
+                (accountSid + ":" + authToken).getBytes(java.nio.charset.StandardCharsets.UTF_8)
+            );
+            String twilioUrl = "https://api.twilio.com/2010-04-01/Accounts/" + accountSid + "/Messages.json";
+
             // Branch on user's verification method choice.
-            // WhatsApp uses raw HTTP (avoids Twilio SDK class-loading issues).
-            // SMS uses Twilio SDK as before.
+            // Both branches call Twilio's REST API directly via java.net.http — no SDK needed.
             boolean isWhatsApp = "whatsapp".equalsIgnoreCase(verificationMethod);
 
             if (isWhatsApp) {
@@ -277,12 +284,6 @@ public class JansNewPasswordService extends NewPasswordService {
                     return null;
                 }
 
-                String accountSid = flowConfig.get("ACCOUNT_SID");
-                String authToken  = flowConfig.get("AUTH_TOKEN");
-                String credentials = Base64.getEncoder().encodeToString(
-                    (accountSid + ":" + authToken).getBytes(java.nio.charset.StandardCharsets.UTF_8)
-                );
-
                 String waFrom = "whatsapp:" + waFromNumber;
                 String waTo   = "whatsapp:" + phone;
                 String encodedTo    = java.net.URLEncoder.encode(waTo, "UTF-8");
@@ -292,7 +293,7 @@ public class JansNewPasswordService extends NewPasswordService {
                 String formBody = "To=" + encodedTo + "&From=" + encodedFrom + "&ContentSid=" + encodedSid + "&ContentVariables=" + encodedVars;
 
                 HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.twilio.com/2010-04-01/Accounts/" + accountSid + "/Messages.json"))
+                    .uri(URI.create(twilioUrl))
                     .header("Authorization", "Basic " + credentials)
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .POST(HttpRequest.BodyPublishers.ofString(formBody))
@@ -307,17 +308,31 @@ public class JansNewPasswordService extends NewPasswordService {
                 logger.info("WhatsApp OTP sent to {}", phone);
                 return phone;
             } else {
-                // SMS via Twilio SDK
+                // SMS via raw HTTP — avoids Twilio SDK + its Apache HttpClient 5 dependency
                 String fromNumber = getFromNumberForPhone(phone);
                 if (fromNumber == null || fromNumber.trim().isEmpty()) {
                     logger.error("FROM_NUMBER null/empty for phone {}", phone);
                     return null;
                 }
 
-                PhoneNumber FROM_NUMBER = new PhoneNumber(fromNumber);
-                PhoneNumber TO_NUMBER = new PhoneNumber(phone);
-                Twilio.init(flowConfig.get("ACCOUNT_SID"), flowConfig.get("AUTH_TOKEN"));
-                Message.creator(TO_NUMBER, FROM_NUMBER, message).create();
+                String encodedTo    = java.net.URLEncoder.encode(phone, "UTF-8");
+                String encodedFrom  = java.net.URLEncoder.encode(fromNumber, "UTF-8");
+                String encodedBody  = java.net.URLEncoder.encode(message, "UTF-8");
+                String formBody = "To=" + encodedTo + "&From=" + encodedFrom + "&Body=" + encodedBody;
+
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(twilioUrl))
+                    .header("Authorization", "Basic " + credentials)
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .POST(HttpRequest.BodyPublishers.ofString(formBody))
+                    .build();
+                HttpResponse<String> response = HttpClient.newHttpClient()
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                    logger.error("SMS send failed: status={} body={}", response.statusCode(), response.body());
+                    return null;
+                }
                 logger.info("SMS OTP sent to {} using sender {}", phone, fromNumber);
                 return phone;
             }
