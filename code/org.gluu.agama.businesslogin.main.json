@@ -1242,8 +1242,8 @@
 			"id": "assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f",
 			"type": "assignmentNode",
 			"position": {
-				"x": 4700.969057608843,
-				"y": 560.8749583417599
+				"x": 4510.374324782233,
+				"y": 456.37900443682304
 			},
 			"data": {
 				"id": "assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f",
@@ -1292,7 +1292,7 @@
 					"x": 4950.969057608843,
 					"y": 560.8749583417599
 				},
-				"previousNodeId": "assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f",
+				"previousNodeId": "assignmentNode-b199d498-2f65-4e18-9579-0a5e2f8e1de8",
 				"agamaData": {
 					"javaClassName": "",
 					"javaMethodName": "sendOTPCode",
@@ -1301,7 +1301,8 @@
 					"callType": "Call method on instance",
 					"arguments": [
 						"username",
-						"storedPhone"
+						"storedPhone",
+						"verificationMethod"
 					],
 					"nodeIcon": "material-symbols:code",
 					"nodeColor": "",
@@ -1317,7 +1318,7 @@
 				"width": 170,
 				"height": 124
 			},
-			"selected": false
+			"selected": true
 		},
 		{
 			"id": "whenNode-e8477c38-45ac-4176-a0de-64ae77ff920e",
@@ -1693,6 +1694,80 @@
 					"returnVariable": "otpFeedBack",
 					"finishMode": "withVariable",
 					"nodeIcon": "material-symbols:line-end-square-rounded"
+				}
+			},
+			"measured": {
+				"width": 170,
+				"height": 124
+			},
+			"selected": false
+		},
+		{
+			"id": "rrfNode-71cf3992-b59e-4cd0-b31f-cf1c6df04036",
+			"type": "rrfNode",
+			"position": {
+				"x": 4760.374324782233,
+				"y": 409.28223647966837
+			},
+			"data": {
+				"id": "rrfNode-71cf3992-b59e-4cd0-b31f-cf1c6df04036",
+				"type": "rrfNode",
+				"position": {
+					"x": 4760.374324782233,
+					"y": 456.37900443682304
+				},
+				"previousNodeId": "assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f",
+				"agamaData": {
+					"assignments": [],
+					"nodeIcon": "ph:globe-simple",
+					"templatePath": "ConfirmBusinessPhone.ftlh",
+					"asssignedVariableName": "phoneConfirmInput",
+					"nodeColor": "",
+					"titleColor": "",
+					"descColor": "",
+					"displayName": "",
+					"hasComment": true,
+					"comment": "",
+					"arguments": "uiFeedback"
+				}
+			},
+			"measured": {
+				"width": 170,
+				"height": 124
+			},
+			"selected": false,
+			"dragging": false
+		},
+		{
+			"id": "assignmentNode-b199d498-2f65-4e18-9579-0a5e2f8e1de8",
+			"type": "assignmentNode",
+			"position": {
+				"x": 5010.374324782233,
+				"y": 409.28223647966837
+			},
+			"data": {
+				"id": "assignmentNode-b199d498-2f65-4e18-9579-0a5e2f8e1de8",
+				"type": "assignmentNode",
+				"position": {
+					"x": 5010.374324782233,
+					"y": 409.28223647966837
+				},
+				"previousNodeId": "rrfNode-71cf3992-b59e-4cd0-b31f-cf1c6df04036",
+				"agamaData": {
+					"assignments": [
+						{
+							"variableTypeCheck": true,
+							"assignmentExpression": "phoneConfirmInput.verificationMethod",
+							"assignedVariableName": "verificationMethod"
+						}
+					],
+					"nodeIcon": "material-symbols:equal",
+					"nodeColor": "",
+					"titleColor": "",
+					"descColor": "",
+					"displayName": "",
+					"hasComment": true,
+					"comment": ""
 				}
 			},
 			"measured": {
@@ -2346,25 +2421,6 @@
 			"sourceHandle": "source_whenNode-ca0d7071-3ecf-4988-837b-dd343f95f7a5_continue"
 		},
 		{
-			"id": "assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f-callNode-ee20b5f1-a524-40ec-85d5-a2be38fc2b8b",
-			"type": "default",
-			"source": "assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f",
-			"target": "callNode-ee20b5f1-a524-40ec-85d5-a2be38fc2b8b",
-			"labelBgPadding": [
-				8,
-				4
-			],
-			"labelBgBorderRadius": 4,
-			"label": "",
-			"labelBgStyle": {
-				"fill": "#009688",
-				"color": "#ffffff",
-				"fillOpacity": 0.7
-			},
-			"labelShowBg": true,
-			"sourceHandle": "source_assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f"
-		},
-		{
 			"id": "callNode-ee20b5f1-a524-40ec-85d5-a2be38fc2b8b-whenNode-e8477c38-45ac-4176-a0de-64ae77ff920e",
 			"type": "default",
 			"source": "callNode-ee20b5f1-a524-40ec-85d5-a2be38fc2b8b",
@@ -2553,11 +2609,67 @@
 			},
 			"labelShowBg": true,
 			"sourceHandle": "source_whenNode-0ce7eef5-2fa4-482e-b4a4-ffc747997052_continue"
+		},
+		{
+			"id": "assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f-rrfNode-71cf3992-b59e-4cd0-b31f-cf1c6df04036",
+			"type": "default",
+			"source": "assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f",
+			"target": "rrfNode-71cf3992-b59e-4cd0-b31f-cf1c6df04036",
+			"labelBgPadding": [
+				8,
+				4
+			],
+			"labelBgBorderRadius": 4,
+			"label": "",
+			"labelBgStyle": {
+				"fill": "#009688",
+				"color": "#ffffff",
+				"fillOpacity": 0.7
+			},
+			"labelShowBg": true,
+			"sourceHandle": "source_assignmentNode-b2d61537-8668-43a9-8df2-c87153f7f28f"
+		},
+		{
+			"id": "rrfNode-71cf3992-b59e-4cd0-b31f-cf1c6df04036-assignmentNode-b199d498-2f65-4e18-9579-0a5e2f8e1de8",
+			"type": "default",
+			"source": "rrfNode-71cf3992-b59e-4cd0-b31f-cf1c6df04036",
+			"target": "assignmentNode-b199d498-2f65-4e18-9579-0a5e2f8e1de8",
+			"labelBgPadding": [
+				8,
+				4
+			],
+			"labelBgBorderRadius": 4,
+			"label": "",
+			"labelBgStyle": {
+				"fill": "#009688",
+				"color": "#ffffff",
+				"fillOpacity": 0.7
+			},
+			"labelShowBg": true,
+			"sourceHandle": "source_rrfNode-71cf3992-b59e-4cd0-b31f-cf1c6df04036"
+		},
+		{
+			"source": "assignmentNode-b199d498-2f65-4e18-9579-0a5e2f8e1de8",
+			"sourceHandle": "source_assignmentNode-b199d498-2f65-4e18-9579-0a5e2f8e1de8",
+			"target": "callNode-ee20b5f1-a524-40ec-85d5-a2be38fc2b8b",
+			"targetHandle": "target_callNode-ee20b5f1-a524-40ec-85d5-a2be38fc2b8b",
+			"label": "",
+			"labelBgPadding": [
+				8,
+				4
+			],
+			"labelBgBorderRadius": 4,
+			"labelBgStyle": {
+				"fill": "#009688",
+				"color": "#ffffff",
+				"fillOpacity": 0.7
+			},
+			"id": "xy-edge__assignmentNode-b199d498-2f65-4e18-9579-0a5e2f8e1de8source_assignmentNode-b199d498-2f65-4e18-9579-0a5e2f8e1de8-callNode-ee20b5f1-a524-40ec-85d5-a2be38fc2b8btarget_callNode-ee20b5f1-a524-40ec-85d5-a2be38fc2b8b"
 		}
 	],
 	"viewport": {
-		"x": -3420.5306226564576,
-		"y": -234.12388116854675,
-		"zoom": 0.6895586249307237
+		"x": -6107.667325602509,
+		"y": -439.443946640318,
+		"zoom": 1.3589042895304992
 	}
 }
