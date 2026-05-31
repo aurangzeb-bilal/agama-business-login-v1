@@ -45,14 +45,14 @@ Repeat 6 times max
                     storedPhone = Call validationService getPhoneNumber username
                     When storedPhone is null
                          Log "@error Business user missing telephoneNumber"
-                         it_kdewv = {success:false, error: "BusinessPhoneMissing"}
-                         Finish it_kdewv
+                         it_wejzo = {success:false, error: "BusinessPhoneMissing"}
+                         Finish it_wejzo
                     uiFeedback.phone = storedPhone
                     smsOtpSend = Call validationService sendOTPCode username storedPhone
                     When smsOtpSend is null
                          Log "@error OTP send failed for stored phone"
-                         it_muiev = {success:false, error: "VerificationCodeFailed"}
-                         Finish it_muiev
+                         it_ockpj = {success:false, error: "VerificationCodeFailed"}
+                         Finish it_ockpj
                     otpFeedBack = Trigger org.gluu.agama.businesslogin.smsotp validationService username storedPhone
                     When otpFeedBack.success is true
                          PhonenumberUpdated = Call validationService markPhoneAsVerified username storedPhone
@@ -74,5 +74,5 @@ Repeat 6 times max
 // The login flow will end here with failure.
 Log "@info The maximum login attempt has been reached!"
 // Maximum attempts reached. Password validation failed!
-it_qbjov = {success:false, error: "Password validation failed!"}
-Finish it_qbjov
+it_wrgml = {success:false, error: "Password validation failed!"}
+Finish it_wrgml
