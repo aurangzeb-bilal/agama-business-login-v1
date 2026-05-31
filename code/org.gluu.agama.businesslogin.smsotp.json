@@ -35,7 +35,7 @@
 				"width": 170,
 				"height": 124
 			},
-			"selected": true
+			"selected": false
 		},
 		{
 			"id": "logNode-0c1681d4-ff6c-4210-b8af-710f18c421ac",
@@ -920,7 +920,8 @@
 					"callType": "Call method on instance",
 					"arguments": [
 						"username",
-						"phone"
+						"phone",
+						"verificationMethod"
 					],
 					"nodeIcon": "material-symbols:code",
 					"nodeColor": "",
@@ -936,7 +937,7 @@
 				"width": 170,
 				"height": 124
 			},
-			"selected": false
+			"selected": true
 		},
 		{
 			"id": "whenNode-e0e3322a-4514-4591-98a0-c17013e4cc1d",
@@ -2255,8 +2256,8 @@
 		}
 	],
 	"viewport": {
-		"x": 172,
-		"y": 52,
-		"zoom": 1
+		"x": -1096.9285628341781,
+		"y": -284.57011073819115,
+		"zoom": 0.8968801155571087
 	}
 }
