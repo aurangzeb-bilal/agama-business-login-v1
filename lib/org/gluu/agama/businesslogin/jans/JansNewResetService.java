@@ -70,6 +70,17 @@ public class JansNewResetService extends NewResetService{
         return new HashMap<>();
     }    
 
+        private boolean isBusinessAccount(User user) {
+        try {
+            if (user == null) return false;
+            Object orgVal = user.getAttribute("businessName", true, false);
+            return orgVal != null && !orgVal.toString().trim().isEmpty();
+        } catch (Exception e) {
+            LogUtils.log("isBusinessAccount lookup failed: %", e.getMessage());
+            return false;
+        }
+    }
+    
     private String getSingleValuedAttr(User user, String attribute) {
         Object value = null;
         if (attribute.equals(UID)) {
