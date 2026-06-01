@@ -45,8 +45,15 @@ public class JansNewResetService extends NewResetService{
         User user = getUser(MAIL, email);
         boolean local = user != null;
         LogUtils.log("There is % local account for %", local ? "a" : "no", email);
-    
-        if (local) {            
+
+        if (local) {
+            // Safety net: only business accounts can reset password via this flow.
+            // Personal users entering their email here get the same surface as user-not-found — no leak.
+            if (!isBusinessAccount(user)) {
+                LogUtils.log("Reset password rejected — not a business account for email %", email);
+                return new HashMap<>();
+            }
+
             String uid = getSingleValuedAttr(user, UID);
             String inum = getSingleValuedAttr(user, INUM_ATTR);
 
@@ -55,14 +62,25 @@ public class JansNewResetService extends NewResetService{
             userMap.put(UID, uid);
             userMap.put(INUM_ATTR, inum);
             userMap.put("email", email);
-            
-    
+
+
             return userMap;
         }
 
         return new HashMap<>();
     }    
 
+        private boolean isBusinessAccount(User user) {
+        try {
+            if (user == null) return false;
+            Object orgVal = user.getAttribute("businessName", true, false);
+            return orgVal != null && !orgVal.toString().trim().isEmpty();
+        } catch (Exception e) {
+            LogUtils.log("isBusinessAccount lookup failed: %", e.getMessage());
+            return false;
+        }
+    }
+    
     private String getSingleValuedAttr(User user, String attribute) {
         Object value = null;
         if (attribute.equals(UID)) {
