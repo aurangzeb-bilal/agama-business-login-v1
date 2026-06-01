@@ -3,7 +3,7 @@
     "description": "Agama login flow for business accounts (mirrors agama-pw-v3, with phone stored in telephoneNumber instead of mobile).",
     "type": "",
     "author": "PhiWallet",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "authorWebsite": "",
     "githubUri": "",
     "license": "apache-2.0",
